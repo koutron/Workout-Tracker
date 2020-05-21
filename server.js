@@ -22,17 +22,20 @@ app.use(express.json());
 // -- TELL EXPRESS WHERE OUR STATIC FILES ARE LOCATED -- //
 app.use(express.static("public"));
 
-// ==== ** OPTIONAL ** ===== //
-// -- IF YOU WANT TO USE HANDLEBARS TO SERVE UP YOUR HTML FILES, INCLUDE MIDDLEWARE SETUP BELOW -- //
-
-// ^^ DON'T FORGET TO ADD THE /views AND ANY LAYOUT FILES REQUIRED FOR HANDLEBARS TO SERVE UP HTML FILES ^^ //
-// ========================= //
-
-
 // -- ROUTES -- //
 
 // --> STUDENTS: DEFINE ROUTES TO HANDLE WORKOUT AND EXERCISE API CALLS -- //
+app.post("/api/workout", function(req, res){
+  db.Workout.create(req.body).then(function(results){
+    res.json(results);
+  });
+});
 
+app.get("/api/exercise", function(req, res){
+  db.Exercise.findAll({}).then(function(results){
+    res.json(results);
+  });
+});
 
 
 
@@ -52,7 +55,7 @@ app.use('/api/activity', api_routes);
 
 // Syncing our sequelize models and then starting our Express app
 // =============================================================
-db.sequelize.sync().then(function() {
+db.sequelize.sync({force:true}).then(function() {
   app.listen(PORT, function() {
     console.log(`App running on port ${PORT}!`);
   });
