@@ -20,7 +20,8 @@ module.exports = function (sequelize, DataTypes) {
   });
 
   Exercise.associate = function(models){
-    Exercise.belongsTo(models.Activity)
+    //Exercise.belongsTo(models.Activity)
+    //Exercise.hasOne(models.Activity);
   }
   return Exercise;
 };

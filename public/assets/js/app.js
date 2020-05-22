@@ -18,7 +18,7 @@ $(document).ready(function(){
       console.log(workout);
       const li = $("<li>");
       li.addClass("workout-item");
-      li.attr("data-workout-id", workout._id);
+      li.attr("data-workout-id", workout.id);
       li.attr("data-workout-idx", idx);
       li.html("<span>" + workout.day + "</span>" + workout.name);
       ul.append(li);
@@ -71,8 +71,13 @@ $(document).ready(function(){
   // STUDENTS: Add an activity to the selected workout, then save via API
   $("button#add-activity").on("click", function(e){
     e.preventDefault();
-
-  
+    activity = {};
+    activity.duration = $("#duration").val();
+    activity.weight = $("#weight").val();
+    activity.reps = $("#reps").val();
+    activity.sets = $("#sets").val();
+    activity.distance = $("#distance").val();
+    saveActivity(activity);
   });
 
 
@@ -88,8 +93,8 @@ $(document).ready(function(){
       // populate the select area
       resp.forEach( exercise => {
         const opt = $("<option>");
-        opt.val(exercise.name);
-        opt.text(exercise.name);
+        opt.val(exercise.exercise_name);
+        opt.text(exercise.exercise_name);
         $("select#exercise").append(opt);
       });
 
@@ -98,7 +103,14 @@ $(document).ready(function(){
 
   // STUDENTS: Retrieve a JSON payload of all workouts done so far
   function getWorkouts(){
-    
+    $.ajax({
+      method: "GET",
+      url: "/api/workout"
+    }).then(function(data){
+      data.forEach(workout => {
+        allWorkouts.push(workout);
+      });
+    });
   }
 
   // Save the currently selected workout
@@ -109,8 +121,9 @@ $(document).ready(function(){
       data: selectedWorkout
     }).then(function(resp){
       console.log(resp);
-      if( resp && resp._id ){
-        selectedWorkout._id = resp._id;
+      console.log(resp.id);
+      if( resp && resp.id ){ // changed from resp._id
+        selectedWorkout.id = resp.id; // changed from resp._id
       }
     });
   }
@@ -120,7 +133,7 @@ $(document).ready(function(){
   function saveActivity(activity){
     $.ajax({
       method: "POST",
-      url: "/api/activity?workoutId=" + selectedWorkout._id,
+      url: "/api/activity?workoutId=" + selectedWorkout.id,
       data: activity
     }).then(function(resp){
       console.log(resp);
