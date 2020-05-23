@@ -36,28 +36,28 @@ $(document).ready(function () {
       url: "/api/getActivities/" + selectedWorkout.id
     }).then(resp => {
       renderActivities(resp);
-      });
-    }
+    });
+  }
 
-  function renderActivities(data){
+  function renderActivities(data) {
     $("#activitiesArea").show();
     $("#activitiesInfo").text("");
     data.Activities.forEach(function (activity, i) {
-    let activityTag = $("<p>");
-    let exerciseTag = $("<p>");
-    let durationTag = $("<p>");
-    let weightTag = $("<p>");
-    let repsTag = $("<p>");
-    let setsTag = $("<p>");
-    let distanceTag = $("<p>");
-    activityTag.text("Activity " + (i+1)*1);
-    exerciseTag.text("Exercise: " + activity.Exercise.exercise_name);
-    durationTag.text("Duration: " + activity.duration);
-    weightTag.text("Weight: " + activity.weight);
-    repsTag.text("Reps: " + activity.reps);
-    setsTag.text("Sets: " + activity.sets);
-    distanceTag.text("Distance: " + activity.distance);
-    $("#activitiesInfo").append(activityTag).append(exerciseTag).append(durationTag).append(weightTag).append(repsTag).append(setsTag).append(distanceTag).append("<hr>");
+      let activityTag = $("<p>");
+      let exerciseTag = $("<p>");
+      let durationTag = $("<p>");
+      let weightTag = $("<p>");
+      let repsTag = $("<p>");
+      let setsTag = $("<p>");
+      let distanceTag = $("<p>");
+      activityTag.text("Activity " + (i + 1) * 1);
+      exerciseTag.text("Exercise: " + activity.Exercise.exercise_name);
+      durationTag.text("Duration: " + activity.duration);
+      weightTag.text("Weight: " + activity.weight);
+      repsTag.text("Reps: " + activity.reps);
+      setsTag.text("Sets: " + activity.sets);
+      distanceTag.text("Distance: " + activity.distance);
+      $("#activitiesInfo").append(activityTag).append(exerciseTag).append(durationTag).append(weightTag).append(repsTag).append(setsTag).append(distanceTag).append("<hr>");
     });
   }
 
@@ -69,105 +69,104 @@ $(document).ready(function () {
   // exist in the DOM when the page is loaded, we need to use the special
   // event selector.
   $("#workouts-list").on("click", ".workout-item", function (e) {
-      e.preventDefault();
-      console.log("item clicked")
-      $("#workouts-list li").removeClass("selected");
-      $(this).addClass("selected");
-      const idx = $(this).attr("data-workout-idx");
-      const id = $(this).attr("data-workout-id");
-      selectedWorkout = allWorkouts[idx];
-      $("div.right-column").show();
-      populateActivities();
-    });
-
-    // Create a new empty workout for the user to work with
-    $("button#add-workout").on("click", function (e) {
-      e.preventDefault();
-      const dayString = moment().format("MMM DD, YYYY");
-      const name = $("#workout-name").val().trim();
-      selectedWorkout = { name: name, day: moment().format("MMM DD, YYYY"), activities: [] };
-      allWorkouts.push(selectedWorkout);
-
-      // Save to db via api
-      saveSelectedWorkout();
-
-      populateWorkouts({ selectLatest: true });
-      $("div.right-column").show();
-    });
-
-    // STUDENTS: Add an activity to the selected workout, then save via API
-    $("button#add-activity").on("click", function (e) {
-      e.preventDefault();
-      activity = {};
-      activity.duration = $("#duration").val();
-      activity.weight = $("#weight").val();
-      activity.reps = $("#reps").val();
-      activity.sets = $("#sets").val();
-      activity.distance = $("#distance").val();
-      activity.ExerciseId = $("select#exercise").val();
-      saveActivity(activity);
-      populateActivities();
-    });
-
-
-    /** ********** API Calls ******************* */
-
-    // Retrive a JSON payload of all exercises
-    function getExercises() {
-      $.ajax({
-        method: "GET",
-        url: "/api/exercise"
-      }).then(resp => {
-        console.log(resp)
-        // populate the select area
-        resp.forEach(exercise => {
-          const opt = $("<option>");
-          opt.val(exercise.id);
-          opt.text(exercise.exercise_name);
-          $("select#exercise").append(opt);
-        });
-
-      })
-    }
-
-    // STUDENTS: Retrieve a JSON payload of all workouts done so far
-    function getWorkouts() {
-      $.ajax({
-        method: "GET",
-        url: "/api/workout"
-      }).then(function (data) {
-        data.forEach(workout => {
-          allWorkouts.push(workout);
-        });
-      });
-    }
-
-    // Save the currently selected workout
-    function saveSelectedWorkout() {
-      $.ajax({
-        method: "POST",
-        url: "/api/workout",
-        data: selectedWorkout
-      }).then(function (resp) {
-        console.log(resp.id);
-        if (resp && resp.id) { // changed from resp._id
-          selectedWorkout.id = resp.id; // changed from resp._id
-        }
-      });
-    }
-
-    // Add an activity to the current workout being viewed.
-    // Save the currently selected workout
-    function saveActivity(activity) {
-      $.ajax({
-        method: "POST",
-        url: "/api/activity?workoutId=" + selectedWorkout.id,
-        data: activity
-      });
-    }
-
-
-    // Page-loading operations
-    getExercises();
-    getWorkouts();
+    e.preventDefault();
+    console.log("item clicked")
+    $("#workouts-list li").removeClass("selected");
+    $(this).addClass("selected");
+    const idx = $(this).attr("data-workout-idx");
+    const id = $(this).attr("data-workout-id");
+    selectedWorkout = allWorkouts[idx];
+    $("div.right-column").show();
+    populateActivities();
   });
+
+  // Create a new empty workout for the user to work with
+  $("button#add-workout").on("click", function (e) {
+    e.preventDefault();
+    const dayString = moment().format("MMM DD, YYYY");
+    const name = $("#workout-name").val().trim();
+    selectedWorkout = { name: name, day: moment().format("MMM DD, YYYY"), activities: [] };
+    allWorkouts.push(selectedWorkout);
+
+    // Save to db via api
+    saveSelectedWorkout();
+
+    populateWorkouts({ selectLatest: true });
+    $("div.right-column").show();
+  });
+
+  // STUDENTS: Add an activity to the selected workout, then save via API
+  $("button#add-activity").on("click", function (e) {
+    e.preventDefault();
+    activity = {};
+    activity.duration = $("#duration").val();
+    activity.weight = $("#weight").val();
+    activity.reps = $("#reps").val();
+    activity.sets = $("#sets").val();
+    activity.distance = $("#distance").val();
+    activity.ExerciseId = $("select#exercise").val();
+    saveActivity(activity);
+    populateActivities();
+  });
+
+
+  /** ********** API Calls ******************* */
+
+  // Retrive a JSON payload of all exercises
+  function getExercises() {
+    $.ajax({
+      method: "GET",
+      url: "/api/exercise"
+    }).then(resp => {
+      // populate the select area
+      resp.forEach(exercise => {
+        const opt = $("<option>");
+        opt.val(exercise.id);
+        opt.text(exercise.exercise_name);
+        $("select#exercise").append(opt);
+      });
+
+    })
+  }
+
+  // STUDENTS: Retrieve a JSON payload of all workouts done so far
+  function getWorkouts() {
+    $.ajax({
+      method: "GET",
+      url: "/api/workout"
+    }).then(function (data) {
+      data.forEach(workout => {
+        allWorkouts.push(workout);
+      });
+    });
+  }
+
+  // Save the currently selected workout
+  function saveSelectedWorkout() {
+    $.ajax({
+      method: "POST",
+      url: "/api/workout",
+      data: selectedWorkout
+    }).then(function (resp) {
+      console.log(resp.id);
+      if (resp && resp.id) { // changed from resp._id
+        selectedWorkout.id = resp.id; // changed from resp._id
+      }
+    });
+  }
+
+  // Add an activity to the current workout being viewed.
+  // Save the currently selected workout
+  function saveActivity(activity) {
+    $.ajax({
+      method: "POST",
+      url: "/api/activity?workoutId=" + selectedWorkout.id,
+      data: activity
+    });
+  }
+
+
+  // Page-loading operations
+  getExercises();
+  getWorkouts();
+});

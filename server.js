@@ -22,50 +22,9 @@ app.use(express.json());
 // -- TELL EXPRESS WHERE OUR STATIC FILES ARE LOCATED -- //
 app.use(express.static("public"));
 
-// -- ROUTES -- //
-
-// --> STUDENTS: DEFINE ROUTES TO HANDLE WORKOUT AND EXERCISE API CALLS -- //
-// app.post("/api/workout", function(req, res){
-//   db.Workout.create(req.body).then(function(results){
-//     res.json(results);
-//   });
-// });
-
-// app.get("/api/exercise", function(req, res){
-//   db.Exercise.findAll({}).then(function(results){
-//     res.json(results);
-//   });
-// });
-
-// app.get("/api/workout", function(req, res){
-//   db.Workout.findAll({}).then(function(results){
-//     console.log(results);
-//     res.json(results);
-//   });
-// });
-
-// app.post("/api/activity", function(req, res){
-//   // console.log(req.query.workoutId);
-//   // console.log(req.body);
-//   db.Activity.create({
-//     duration: req.body.duration,
-//     weight: req.body.weight,
-//     reps: req.body.reps,
-//     sets: req.body.sets,
-//     distance: req.body.distance,
-//     WorkoutId: req.query.workoutId
-//   }).then(function(results){
-//     console.log(results);
-//     res.json(results);
-//   })
-// })
-
-
-
 // ================================== // 
 // -- Activity Syntax -> Passing App INSTANCE to Route -- //
 require("./routes/html_routes")(app);
-
 
 // -- Example ROUTES using EXPRESS ROUTER (https://expressjs.com/en/guide/routing.html) -- //
 
@@ -74,7 +33,6 @@ app.use('/api', api_routes);
 
 // ======= ALTERNATE SYNTAX FOR /about ROUTE USING EXPRESS ROUTER ==== //
 // app.use('/about', about_routes);  // <-- uncomment to use, update 
-
 
 // Syncing our sequelize models and then starting our Express app
 // =============================================================
