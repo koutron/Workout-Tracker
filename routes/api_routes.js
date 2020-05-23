@@ -25,18 +25,36 @@ router.get("/workout", function(req, res){
   });
 
   router.post("/activity", function(req, res){
-    // console.log(req.query.workoutId);
-    // console.log(req.body);
     db.Activity.create({
       duration: req.body.duration,
       weight: req.body.weight,
       reps: req.body.reps,
       sets: req.body.sets,
       distance: req.body.distance,
-      WorkoutId: req.query.workoutId
+      WorkoutId: req.query.workoutId,
+      ExerciseId: req.body.ExerciseId
     }).then(function(results){
       res.json(results);
     });
+  });
+
+  router.get("/getActivities/:workoutId", function(req, res){
+    //Return all activities associated with a workout
+    db.Workout.findOne({
+        where: {
+          id: req.params.workoutId
+        },
+        //Inner JOIN on both Activity and Exercise
+        include: [
+            {
+                model: db.Activity,
+                required: true,
+                include: [{model: db.Exercise, required: true}]
+            }
+        ]
+      }).then(function(data) {
+        res.json(data);
+      });
   });
 
 // GET  "/""
